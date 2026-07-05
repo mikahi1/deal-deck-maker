@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: deal-deck-maker
+    runtime: static
+    buildCommand: echo "No build required"
+    staticPublishPath: .
+    autoDeployTrigger: commit
