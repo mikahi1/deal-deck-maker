@@ -115,6 +115,11 @@ body{margin:0;font-family:'Montserrat',Arial,sans-serif;color:var(--ink);backgro
 #printArea{display:none;}
 @page{size:letter;margin:0.25in;}
 @media print{
+  html,body,#printArea,#printArea *{
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+    color-adjust:exact!important;
+  }
   .appheader,.app{display:none!important;}
   #printArea{display:block!important;}
   .sheet{display:grid;grid-template-columns:repeat(3,240px);grid-auto-rows:336px;justify-content:center;align-content:start;gap:0;page-break-after:always;}
