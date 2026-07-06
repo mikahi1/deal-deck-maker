@@ -172,6 +172,7 @@ body:not(.locked) .gate{display:none;}
   </div>
   <div class="hbtns">
     <a class="btn alt" href="box-cutout.html" target="_blank" rel="noopener">Box cutout</a>
+    <button class="btn alt" onclick="printBoxCutout()">Print box</button>
     <button class="btn alt" onclick="printBacks()">Print backs</button>
     <button class="btn" onclick="printFronts()">Print deck</button>
   </div>
@@ -391,6 +392,7 @@ function render(){clearTimeout(timer);timer=setTimeout(()=>{
 function sheets(cards){let out='';for(let i=0;i<cards.length;i+=9){out+='<div class="sheet">'+cards.slice(i,i+9).join('')+'</div>';}return out;}
 function printFronts(){document.getElementById('printArea').innerHTML=sheets(buildDeck(true));window.print();}
 function printBacks(){const n=buildDeck(true).length;const backs=[];for(let i=0;i<n;i++)backs.push(backCard());document.getElementById('printArea').innerHTML=sheets(backs);window.print();}
+function printBoxCutout(){window.open('box-cutout.html?print=1','_blank','noopener');}
 
 setupGate();buildForm();render();
 </script>

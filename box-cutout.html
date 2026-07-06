@@ -166,5 +166,10 @@ svg{display:block;width:100%;height:100%;}
     </svg>
   </section>
 </main>
+<script>
+if(new URLSearchParams(window.location.search).has('print')){
+  window.addEventListener('load',()=>setTimeout(()=>window.print(),250));
+}
+</script>
 </body>
 </html>
