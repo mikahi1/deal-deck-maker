@@ -33,6 +33,7 @@ body:not(.locked) .gate{display:none;}
 .appheader p{margin:2px 0 0;font-size:12px;font-weight:600;opacity:.92;}
 .hbtns{display:flex;gap:10px;flex-shrink:0;}
 .btn{border:none;border-radius:8px;padding:10px 15px;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;background:#141414;color:#fff;transition:transform .05s;}
+.btn[href]{display:inline-block;text-decoration:none;}
 .btn:active{transform:translateY(1px);}
 .btn.alt{background:#fff;color:var(--red);}
 .app{display:grid;grid-template-columns:392px 1fr;}
@@ -170,6 +171,7 @@ body:not(.locked) .gate{display:none;}
     <p>Type your name and your favorite places &mdash; get a full deck to print.</p>
   </div>
   <div class="hbtns">
+    <a class="btn alt" href="box-cutout.html" target="_blank" rel="noopener">Box cutout</a>
     <button class="btn alt" onclick="printBacks()">Print backs</button>
     <button class="btn" onclick="printFronts()">Print deck</button>
   </div>
