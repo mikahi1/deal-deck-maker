@@ -3,170 +3,222 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Deal Deck Box Cutout</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Fraunces:opsz,wght@9..144,700&display=swap">
+<title>Box Cutout</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap">
 <style>
-:root{--red:#cf372d;--ink:#1d1d1f;--paper:#eee9df;--line:#141414;--fold:#2365a8;}
+:root{
+  --panel-front:#cf372d;
+  --panel-back:#cf372d;
+  --panel-side:#a92f28;
+  --panel-flap:#d94d3f;
+  --text-color:#ffffff;
+  --cut-color:#141414;
+  --fold-color:#2365a8;
+  --paper:#eee9df;
+  --ink:#1d1d1f;
+}
 *{box-sizing:border-box;}
 body{margin:0;font-family:Montserrat,Arial,sans-serif;color:var(--ink);background:var(--paper);}
-.toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;background:var(--red);color:#fff;}
-.toolbar h1{margin:0;font-size:20px;font-weight:900;font-style:italic;}
-.toolbar p{margin:2px 0 0;font-size:12px;font-weight:700;opacity:.92;}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;background:var(--panel-front);color:#fff;}
+.toolbar h1{margin:0;font-size:20px;font-weight:900;font-style:italic;letter-spacing:0;}
 .actions{display:flex;gap:10px;align-items:center;flex-shrink:0;}
 .btn{border:0;border-radius:8px;background:#141414;color:#fff;font:800 13px Montserrat,Arial,sans-serif;padding:10px 15px;text-decoration:none;cursor:pointer;}
-.btn.alt{background:#fff;color:var(--red);}
-.wrap{padding:18px;display:grid;gap:14px;justify-items:center;}
-.note{width:min(100%,11in);display:flex;justify-content:space-between;gap:14px;color:#5b5750;font-size:12px;font-weight:700;line-height:1.4;}
-.note span{display:inline-flex;align-items:center;gap:7px;}
-.swatch{width:28px;height:0;border-top:3px solid var(--line);}
-.foldswatch{width:28px;height:0;border-top:3px dashed var(--fold);}
+.btn.alt{background:#fff;color:var(--panel-front);}
+.workspace{display:grid;grid-template-columns:320px minmax(0,1fr);gap:18px;padding:18px;align-items:start;}
+.controls{background:#fff;border:1px solid #d8d5cc;border-radius:8px;padding:16px;display:grid;gap:16px;}
+.controls h2{margin:0;font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#777;}
+.field{display:grid;gap:6px;}
+.field label{font-size:11px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#555;}
+.field input[type="text"]{width:100%;border:1.5px solid #d8d5cc;border-radius:8px;padding:9px 11px;font:700 14px Montserrat,Arial,sans-serif;}
+.field input[type="text"]:focus{outline:none;border-color:var(--panel-front);}
+.swatches{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.swatch{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #e0ddd4;border-radius:8px;padding:8px 9px;}
+.swatch label{font-size:11px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#555;}
+.swatch input{width:34px;height:28px;border:0;background:transparent;padding:0;cursor:pointer;}
+.stage{display:grid;justify-items:center;gap:10px;overflow:auto;}
 .sheet{width:11in;height:8.5in;background:#fff;box-shadow:0 14px 34px rgba(0,0,0,.18);}
 svg{display:block;width:100%;height:100%;}
-.cut{fill:none;stroke:var(--line);stroke-width:.018;stroke-linejoin:round;stroke-linecap:round;}
-.fold{fill:none;stroke:var(--fold);stroke-width:.014;stroke-dasharray:.075 .055;stroke-linecap:round;}
-.panel-fill{stroke:none;}
-.label{font-family:Montserrat,Arial,sans-serif;font-weight:900;letter-spacing:0;fill:#fff;}
-.small{font-family:Montserrat,Arial,sans-serif;font-size:.11px;font-weight:800;letter-spacing:.01px;fill:#2f2b27;}
-.small.light{fill:#fff;}
-.tiny{font-family:Montserrat,Arial,sans-serif;font-size:.09px;font-weight:800;letter-spacing:.01px;fill:#706b63;}
-.foldtext{font-family:Montserrat,Arial,sans-serif;font-size:.075px;font-weight:900;letter-spacing:.01px;fill:var(--fold);}
-.shadow{fill:#efefef;stroke:#242424;stroke-width:.035;paint-order:stroke;filter:url(#softShadow);}
+.front-fill{fill:var(--panel-front);}
+.back-fill{fill:var(--panel-back);}
+.side-fill{fill:var(--panel-side);}
+.flap-fill{fill:var(--panel-flap);}
+.pattern-line{fill:#141414;opacity:.08;}
+.cut{fill:none;stroke:var(--cut-color);stroke-width:.018;stroke-linejoin:round;stroke-linecap:round;}
+.fold{fill:none;stroke:var(--fold-color);stroke-width:.014;stroke-dasharray:.075 .055;stroke-linecap:round;}
+.art-border{fill:none;stroke:var(--text-color);stroke-width:.035;}
+.box-text{font-family:Montserrat,Arial,sans-serif;font-weight:900;letter-spacing:0;fill:var(--text-color);}
+.box-subtext{font-family:Montserrat,Arial,sans-serif;font-weight:800;letter-spacing:.015px;fill:var(--text-color);}
+.mark-fill{fill:var(--text-color);}
 @page{size:letter landscape;margin:0;}
+@media(max-width:900px){
+  .workspace{grid-template-columns:1fr;}
+}
 @media print{
   html,body,.sheet,.sheet *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}
   body{background:#fff;}
-  .toolbar,.note{display:none!important;}
-  .wrap{padding:0;}
+  .toolbar,.controls{display:none!important;}
+  .workspace{display:block;padding:0;}
+  .stage{display:block;overflow:visible;}
   .sheet{box-shadow:none;width:11in;height:8.5in;}
 }
 </style>
 </head>
 <body>
 <header class="toolbar">
-  <div>
-    <h1>Deal Deck Box Cutout</h1>
-    <p>Print on cardstock at 100% scale, then cut solid lines and fold dashed lines.</p>
-  </div>
+  <h1>Box Cutout</h1>
   <div class="actions">
     <a class="btn alt" href="index.html">Deck maker</a>
-    <button class="btn" type="button" onclick="window.print()">Print cutout</button>
+    <button class="btn" type="button" onclick="window.print()">Print</button>
   </div>
 </header>
 
-<main class="wrap">
-  <div class="note">
-    <span><i class="swatch"></i> Cut</span>
-    <span><i class="foldswatch"></i> Fold</span>
-    <span>Inside fit: about 2.72 in x 3.72 in x 1.50 in for the 111-card deck.</span>
-  </div>
+<main class="workspace">
+  <aside class="controls">
+    <h2>Text</h2>
+    <div class="field">
+      <label for="frontTitle">Front title</label>
+      <input id="frontTitle" type="text" value="DEAL" maxlength="18">
+    </div>
+    <div class="field">
+      <label for="frontSubtitle">Front subtitle</label>
+      <input id="frontSubtitle" type="text" value="" maxlength="24">
+    </div>
+    <div class="field">
+      <label for="backTitle">Back title</label>
+      <input id="backTitle" type="text" value="DEAL" maxlength="18">
+    </div>
+    <div class="field">
+      <label for="backSubtitle">Back subtitle</label>
+      <input id="backSubtitle" type="text" value="" maxlength="24">
+    </div>
+    <div class="field">
+      <label for="leftSpine">Left spine</label>
+      <input id="leftSpine" type="text" value="DEAL" maxlength="20">
+    </div>
+    <div class="field">
+      <label for="rightSpine">Right spine</label>
+      <input id="rightSpine" type="text" value="" maxlength="20">
+    </div>
 
-  <section class="sheet" aria-label="Printable tuck box cutout">
-    <svg viewBox="0 0 11 8.5" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="svgTitle svgDesc">
-      <title id="svgTitle">Deal Deck tuck box cutout</title>
-      <desc id="svgDesc">A printable card box net with solid cut lines, dashed fold lines, glue tab, tuck flaps, and dust flaps.</desc>
-      <defs>
-        <linearGradient id="boxRed" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#e5493d"/>
-          <stop offset=".55" stop-color="#cf372d"/>
-          <stop offset="1" stop-color="#af2a21"/>
-        </linearGradient>
-        <linearGradient id="flapRed" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#f6c6b5"/>
-          <stop offset="1" stop-color="#d94d3f"/>
-        </linearGradient>
-        <pattern id="stripe" width=".18" height=".18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-          <rect width=".18" height=".18" fill="transparent"/>
-          <rect width=".035" height=".18" fill="#141414" opacity=".09"/>
-        </pattern>
-        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy=".035" stdDeviation=".012" flood-color="#000" flood-opacity=".35"/>
-        </filter>
-        <symbol id="moneyMark" viewBox="0 0 30 30">
-          <text x="15" y="23" text-anchor="middle" font-family="Montserrat,Arial" font-weight="900" font-size="26" fill="currentColor">M</text>
-          <rect x="4" y="12" width="22" height="2.8" fill="currentColor"/>
-          <rect x="4" y="18.5" width="22" height="2.8" fill="currentColor"/>
-        </symbol>
-      </defs>
+    <h2>Colors</h2>
+    <div class="swatches">
+      <div class="swatch"><label for="frontColor">Front</label><input id="frontColor" type="color" value="#cf372d"></div>
+      <div class="swatch"><label for="backColor">Back</label><input id="backColor" type="color" value="#cf372d"></div>
+      <div class="swatch"><label for="sideColor">Sides</label><input id="sideColor" type="color" value="#a92f28"></div>
+      <div class="swatch"><label for="flapColor">Flaps</label><input id="flapColor" type="color" value="#d94d3f"></div>
+      <div class="swatch"><label for="textColor">Text</label><input id="textColor" type="color" value="#ffffff"></div>
+      <div class="swatch"><label for="cutColor">Cut</label><input id="cutColor" type="color" value="#141414"></div>
+      <div class="swatch"><label for="foldColor">Fold</label><input id="foldColor" type="color" value="#2365a8"></div>
+    </div>
+  </aside>
 
-      <rect width="11" height="8.5" fill="#fff"/>
-      <text x=".42" y=".42" class="tiny">Print actual size. Do not fit to page.</text>
+  <section class="stage">
+    <div class="sheet">
+      <svg viewBox="0 0 11 8.5" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Printable box cutout">
+        <defs>
+          <pattern id="stripe" width=".18" height=".18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width=".18" height=".18" fill="transparent"/>
+            <rect class="pattern-line" width=".035" height=".18"/>
+          </pattern>
+          <symbol id="moneyMark" viewBox="0 0 30 30">
+            <text x="15" y="23" text-anchor="middle" font-family="Montserrat,Arial" font-weight="900" font-size="26" class="mark-fill">M</text>
+            <rect x="4" y="12" width="22" height="2.8" class="mark-fill"/>
+            <rect x="4" y="18.5" width="22" height="2.8" class="mark-fill"/>
+          </symbol>
+        </defs>
 
-      <g transform="translate(1.03 1.24)">
-        <!-- dimensions: glue .50, side 1.50, panel 2.72, side 1.50, panel 2.72; height 3.72; flaps 1.15 -->
-        <path class="panel-fill" fill="#f2eee5" d="M.08 1.47 L.50 1.15 L.50 4.87 L.08 4.55 Z"/>
-        <rect class="panel-fill" x=".50" y="1.15" width="1.50" height="3.72" fill="#b42d26"/>
-        <rect class="panel-fill" x="2.00" y="1.15" width="2.72" height="3.72" fill="url(#boxRed)"/>
-        <rect class="panel-fill" x="4.72" y="1.15" width="1.50" height="3.72" fill="#b42d26"/>
-        <rect class="panel-fill" x="6.22" y="1.15" width="2.72" height="3.72" fill="url(#boxRed)"/>
-        <rect class="panel-fill" x=".50" y="1.15" width="8.44" height="3.72" fill="url(#stripe)" opacity=".75"/>
+        <rect width="11" height="8.5" fill="#fff"/>
+        <g transform="translate(1.03 1.24)">
+          <path fill="#f2eee5" d="M.08 1.47 L.50 1.15 L.50 4.87 L.08 4.55 Z"/>
+          <rect class="side-fill" x=".50" y="1.15" width="1.50" height="3.72"/>
+          <rect class="back-fill" x="2.00" y="1.15" width="2.72" height="3.72"/>
+          <rect class="side-fill" x="4.72" y="1.15" width="1.50" height="3.72"/>
+          <rect class="front-fill" x="6.22" y="1.15" width="2.72" height="3.72"/>
+          <rect x=".50" y="1.15" width="8.44" height="3.72" fill="url(#stripe)"/>
 
-        <path class="panel-fill" fill="#d94d3f" d="M.50 1.15 L.68 .18 L1.82 .18 L2.00 1.15 Z"/>
-        <path class="panel-fill" fill="url(#flapRed)" d="M2.00 1.15 L2.00 .28 Q3.36 -.04 4.72 .28 L4.72 1.15 Z"/>
-        <path class="panel-fill" fill="#d94d3f" d="M4.72 1.15 L4.90 .18 L6.04 .18 L6.22 1.15 Z"/>
-        <path class="panel-fill" fill="url(#flapRed)" d="M6.22 1.15 L6.22 .28 Q7.58 -.04 8.94 .28 L8.94 1.15 Z"/>
+          <path class="flap-fill" d="M.50 1.15 L.68 .18 L1.82 .18 L2.00 1.15 Z"/>
+          <path class="flap-fill" d="M2.00 1.15 L2.00 .28 Q3.36 -.04 4.72 .28 L4.72 1.15 Z"/>
+          <path class="flap-fill" d="M4.72 1.15 L4.90 .18 L6.04 .18 L6.22 1.15 Z"/>
+          <path class="flap-fill" d="M6.22 1.15 L6.22 .28 Q7.58 -.04 8.94 .28 L8.94 1.15 Z"/>
+          <path class="flap-fill" d="M.50 4.87 L2.00 4.87 L1.82 5.84 L.68 5.84 Z"/>
+          <path class="flap-fill" d="M2.00 4.87 L4.72 4.87 L4.72 5.74 Q3.36 6.06 2.00 5.74 Z"/>
+          <path class="flap-fill" d="M4.72 4.87 L6.22 4.87 L6.04 5.84 L4.90 5.84 Z"/>
+          <path class="flap-fill" d="M6.22 4.87 L8.94 4.87 L8.94 5.74 Q7.58 6.06 6.22 5.74 Z"/>
 
-        <path class="panel-fill" fill="#d94d3f" d="M.50 4.87 L2.00 4.87 L1.82 5.84 L.68 5.84 Z"/>
-        <path class="panel-fill" fill="url(#flapRed)" d="M2.00 4.87 L4.72 4.87 L4.72 5.74 Q3.36 6.06 2.00 5.74 Z"/>
-        <path class="panel-fill" fill="#d94d3f" d="M4.72 4.87 L6.22 4.87 L6.04 5.84 L4.90 5.84 Z"/>
-        <path class="panel-fill" fill="url(#flapRed)" d="M6.22 4.87 L8.94 4.87 L8.94 5.74 Q7.58 6.06 6.22 5.74 Z"/>
+          <path class="cut" d="M.08 1.47 L.50 1.15"/>
+          <path class="cut" d="M.08 1.47 L.08 4.55"/>
+          <path class="cut" d="M.08 4.55 L.50 4.87"/>
+          <path class="cut" d="M8.94 1.15 L8.94 4.87"/>
+          <path class="cut" d="M.50 1.15 L.68 .18 L1.82 .18 L2.00 1.15"/>
+          <path class="cut" d="M2.00 1.15 L2.00 .28 Q3.36 -.04 4.72 .28 L4.72 1.15"/>
+          <path class="cut" d="M4.72 1.15 L4.90 .18 L6.04 .18 L6.22 1.15"/>
+          <path class="cut" d="M6.22 1.15 L6.22 .28 Q7.58 -.04 8.94 .28 L8.94 1.15"/>
+          <path class="cut" d="M.50 4.87 L.68 5.84 L1.82 5.84 L2.00 4.87"/>
+          <path class="cut" d="M2.00 4.87 L2.00 5.74 Q3.36 6.06 4.72 5.74 L4.72 4.87"/>
+          <path class="cut" d="M4.72 4.87 L4.90 5.84 L6.04 5.84 L6.22 4.87"/>
+          <path class="cut" d="M6.22 4.87 L6.22 5.74 Q7.58 6.06 8.94 5.74 L8.94 4.87"/>
 
-        <!-- solid cut lines -->
-        <path class="cut" d="M.08 1.47 L.50 1.15"/>
-        <path class="cut" d="M.08 1.47 L.08 4.55"/>
-        <path class="cut" d="M.08 4.55 L.50 4.87"/>
-        <path class="cut" d="M8.94 1.15 L8.94 4.87"/>
-        <path class="cut" d="M.50 1.15 L.68 .18 L1.82 .18 L2.00 1.15"/>
-        <path class="cut" d="M2.00 1.15 L2.00 .28 Q3.36 -.04 4.72 .28 L4.72 1.15"/>
-        <path class="cut" d="M4.72 1.15 L4.90 .18 L6.04 .18 L6.22 1.15"/>
-        <path class="cut" d="M6.22 1.15 L6.22 .28 Q7.58 -.04 8.94 .28 L8.94 1.15"/>
-        <path class="cut" d="M.50 4.87 L.68 5.84 L1.82 5.84 L2.00 4.87"/>
-        <path class="cut" d="M2.00 4.87 L2.00 5.74 Q3.36 6.06 4.72 5.74 L4.72 4.87"/>
-        <path class="cut" d="M4.72 4.87 L4.90 5.84 L6.04 5.84 L6.22 4.87"/>
-        <path class="cut" d="M6.22 4.87 L6.22 5.74 Q7.58 6.06 8.94 5.74 L8.94 4.87"/>
+          <path class="fold" d="M.50 1.15 L.50 4.87"/>
+          <path class="fold" d="M2.00 1.15 L2.00 4.87"/>
+          <path class="fold" d="M4.72 1.15 L4.72 4.87"/>
+          <path class="fold" d="M6.22 1.15 L6.22 4.87"/>
+          <path class="fold" d="M.50 1.15 L8.94 1.15"/>
+          <path class="fold" d="M.50 4.87 L8.94 4.87"/>
 
-        <!-- dashed fold lines -->
-        <path class="fold" d="M.50 1.15 L.50 4.87"/>
-        <path class="fold" d="M2.00 1.15 L2.00 4.87"/>
-        <path class="fold" d="M4.72 1.15 L4.72 4.87"/>
-        <path class="fold" d="M6.22 1.15 L6.22 4.87"/>
-        <path class="fold" d="M.50 1.15 L8.94 1.15"/>
-        <path class="fold" d="M.50 4.87 L8.94 4.87"/>
+          <rect x="2.17" y="1.32" width="2.38" height="3.38" rx=".12" class="art-border"/>
+          <circle cx="3.36" cy="3.02" r=".58" fill="#fff" opacity=".14"/>
+          <use href="#moneyMark" x="3.05" y="2.71" width=".62" height=".62"/>
+          <text id="backTitleText" x="3.36" y="2.30" text-anchor="middle" class="box-text" font-size=".38">DEAL</text>
+          <text id="backSubtitleText" x="3.36" y="3.92" text-anchor="middle" class="box-subtext" font-size=".17"></text>
 
-        <!-- back panel art -->
-        <rect x="2.17" y="1.32" width="2.38" height="3.38" rx=".12" fill="none" stroke="#fff" stroke-width=".035"/>
-        <text x="3.36" y="2.18" text-anchor="middle" class="label" font-size=".35">DEAL</text>
-        <circle cx="3.36" cy="3.05" r=".62" fill="#fff" opacity=".95"/>
-        <use href="#moneyMark" x="3.03" y="2.72" width=".66" height=".66" color="#141414"/>
-        <text x="3.36" y="4.20" text-anchor="middle" class="small light">CARD BACK</text>
+          <rect x="6.39" y="1.32" width="2.38" height="3.38" rx=".12" class="art-border"/>
+          <circle cx="7.58" cy="3.03" r=".64" fill="#fff" opacity=".12"/>
+          <text id="frontTitleText" x="7.58" y="2.62" text-anchor="middle" class="box-text" font-size=".58" font-style="italic">DEAL</text>
+          <text id="frontSubtitleText" x="7.58" y="3.36" text-anchor="middle" class="box-subtext" font-size=".20"></text>
 
-        <!-- front panel art -->
-        <rect x="6.39" y="1.32" width="2.38" height="3.38" rx=".12" fill="none" stroke="#fff" stroke-width=".035"/>
-        <text x="7.58" y="2.23" text-anchor="middle" class="shadow" font-family="Montserrat,Arial" font-weight="900" font-style="italic" font-size=".58">DEAL</text>
-        <text x="7.58" y="2.70" text-anchor="middle" class="label" font-size=".24">DECK MAKER</text>
-        <text x="7.58" y="3.58" text-anchor="middle" class="label" font-size=".22">111 CARDS</text>
-        <text x="7.58" y="3.89" text-anchor="middle" class="label" font-size=".17">TUCK BOX</text>
-
-        <!-- side text -->
-        <g transform="translate(1.25 3.02) rotate(-90)">
-          <text text-anchor="middle" class="label" font-size=".23">DEAL DECK</text>
-          <text y=".29" text-anchor="middle" class="label" font-size=".13">1.50 IN SPINE</text>
+          <g transform="translate(1.25 3.02) rotate(-90)">
+            <text id="leftSpineText" text-anchor="middle" class="box-text" font-size=".23">DEAL</text>
+          </g>
+          <g transform="translate(5.47 3.02) rotate(90)">
+            <text id="rightSpineText" text-anchor="middle" class="box-text" font-size=".23"></text>
+          </g>
         </g>
-        <g transform="translate(5.47 3.02) rotate(90)">
-          <text text-anchor="middle" class="label" font-size=".21">CUT - FOLD - GLUE</text>
-        </g>
-
-        <text x=".26" y="3.02" text-anchor="middle" class="tiny" transform="rotate(-90 .26 3.02)">GLUE TAB</text>
-        <text x="3.36" y=".68" text-anchor="middle" class="foldtext">TUCK FLAP</text>
-        <text x="7.58" y=".68" text-anchor="middle" class="foldtext">TUCK FLAP</text>
-        <text x="3.36" y="5.46" text-anchor="middle" class="foldtext">BOTTOM FLAP</text>
-        <text x="7.58" y="5.46" text-anchor="middle" class="foldtext">BOTTOM FLAP</text>
-      </g>
-
-      <text x=".42" y="8.12" class="tiny">Assemble: score dashed folds, cut solid outline, wrap panels around the deck, glue the side tab inside the front panel, then tuck flaps closed.</text>
-    </svg>
+      </svg>
+    </div>
   </section>
 </main>
+
 <script>
+const textFields=['frontTitle','frontSubtitle','backTitle','backSubtitle','leftSpine','rightSpine'];
+const colorFields={
+  frontColor:'--panel-front',
+  backColor:'--panel-back',
+  sideColor:'--panel-side',
+  flapColor:'--panel-flap',
+  textColor:'--text-color',
+  cutColor:'--cut-color',
+  foldColor:'--fold-color'
+};
+function syncText(id){
+  const target=document.getElementById(id+'Text');
+  const source=document.getElementById(id);
+  if(!target||!source)return;
+  const value=source.value.trim();
+  target.textContent=value;
+  target.style.display=value?'block':'none';
+}
+function syncColor(id,variable){
+  document.documentElement.style.setProperty(variable,document.getElementById(id).value);
+}
+function syncAll(){
+  textFields.forEach(syncText);
+  Object.entries(colorFields).forEach(([id,variable])=>syncColor(id,variable));
+}
+textFields.forEach(id=>document.getElementById(id).addEventListener('input',()=>syncText(id)));
+Object.entries(colorFields).forEach(([id,variable])=>{
+  document.getElementById(id).addEventListener('input',()=>syncColor(id,variable));
+});
+syncAll();
 if(new URLSearchParams(window.location.search).has('print')){
   window.addEventListener('load',()=>setTimeout(()=>window.print(),250));
 }
