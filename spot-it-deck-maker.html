@@ -931,7 +931,7 @@ function refresh(){
 /* ---------- generation & render ---------- */
 $('genBtn').addEventListener('click', generate);
 $('shuffleBtn').addEventListener('click', () => { buildLayouts(); renderDeck(); });
-$('printBtn').addEventListener('click', () => window.print());
+$('printBtn').addEventListener('click', openPrintablePdf);
 $('sizeSel').addEventListener('change', ev =>
   document.documentElement.style.setProperty('--print-size', ev.target.value));
 document.documentElement.style.setProperty('--print-size', '80mm');
@@ -1008,6 +1008,187 @@ function renderDeck(){
     frag.appendChild(wrap);
   });
   deckEl.appendChild(frag);
+}
+
+/* ---------- printable PDF ---------- */
+function base64ToBytes(base64){
+  const bin = atob(base64);
+  const bytes = new Uint8Array(bin.length);
+  for(let i=0; i<bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
+function mmToPt(mm){return mm * 72 / 25.4;}
+function currentPrintMm(){
+  const value = $('sizeSel').value || '80mm';
+  const match = value.match(/[\d.]+/);
+  return match ? Number(match[0]) : 80;
+}
+
+function waitForImage(img){
+  return new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+  });
+}
+
+async function cardToJpeg(card, layout, index){
+  const svg = cardSVG(card, layout, index);
+  const blob = new Blob([svg], {type:'image/svg+xml;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.decoding = 'async';
+  const loaded = waitForImage(img);
+  img.src = url;
+  await loaded;
+  URL.revokeObjectURL(url);
+
+  const px = 1000;
+  const canvas = document.createElement('canvas');
+  canvas.width = px;
+  canvas.height = px;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0,0,px,px);
+  ctx.drawImage(img,0,0,px,px);
+  const dataUrl = canvas.toDataURL('image/jpeg',0.94);
+  return {
+    width:px,
+    height:px,
+    bytes:base64ToBytes(dataUrl.split(',')[1])
+  };
+}
+
+function makePdfObjectStream(header, bytes){
+  return [header + '\nstream\n', bytes, '\nendstream'];
+}
+
+function buildDeckPdf(images, cardMm){
+  const pageW = 612;
+  const pageH = 792;
+  const margin = 18;
+  const gap = 10;
+  const cardPt = mmToPt(cardMm);
+  const cols = Math.max(1, Math.floor((pageW - margin * 2 + gap) / (cardPt + gap)));
+  const rows = Math.max(1, Math.floor((pageH - margin * 2 + gap) / (cardPt + gap)));
+  const perPage = cols * rows;
+  const pageCount = Math.ceil(images.length / perPage);
+
+  const objects = [];
+  const pageRecords = [];
+  let nextObj = 3;
+
+  for(let pageIndex=0; pageIndex<pageCount; pageIndex++){
+    const pageImages = images.slice(pageIndex * perPage, (pageIndex + 1) * perPage);
+    const pageObj = nextObj++;
+    const contentObj = nextObj++;
+    const imageObjs = pageImages.map(() => nextObj++);
+    pageRecords.push({pageObj, contentObj, imageObjs, images:pageImages});
+  }
+
+  objects[1] = '<< /Type /Catalog /Pages 2 0 R >>';
+  objects[2] = `<< /Type /Pages /Kids [${pageRecords.map(p=>p.pageObj + ' 0 R').join(' ')}] /Count ${pageRecords.length} >>`;
+
+  pageRecords.forEach(record => {
+    const resources = record.imageObjs.map((obj,i)=>`/Im${i+1} ${obj} 0 R`).join(' ');
+    objects[record.pageObj] =
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /XObject << ${resources} >> >> /Contents ${record.contentObj} 0 R >>`;
+
+    const usedCols = Math.min(cols, record.images.length);
+    const gridW = usedCols * cardPt + Math.max(0, usedCols - 1) * gap;
+    const startX = (pageW - gridW) / 2;
+    let commands = '';
+    record.images.forEach((img,i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const x = startX + col * (cardPt + gap);
+      const y = pageH - margin - cardPt - row * (cardPt + gap);
+      commands += `q ${cardPt.toFixed(2)} 0 0 ${cardPt.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)} cm /Im${i+1} Do Q\n`;
+    });
+    const contentBytes = new TextEncoder().encode(commands);
+    objects[record.contentObj] = makePdfObjectStream(`<< /Length ${contentBytes.length} >>`, contentBytes);
+
+    record.images.forEach((img,i) => {
+      objects[record.imageObjs[i]] = makePdfObjectStream(
+        `<< /Type /XObject /Subtype /Image /Width ${img.width} /Height ${img.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${img.bytes.length} >>`,
+        img.bytes
+      );
+    });
+  });
+
+  const enc = new TextEncoder();
+  const chunks = [];
+  const offsets = [];
+  let pos = 0;
+  function write(chunk){
+    const bytes = typeof chunk === 'string' ? enc.encode(chunk) : chunk;
+    chunks.push(bytes);
+    pos += bytes.length;
+  }
+  write('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+  for(let i=1; i<objects.length; i++){
+    offsets[i] = pos;
+    write(`${i} 0 obj\n`);
+    const obj = objects[i];
+    if(Array.isArray(obj)) obj.forEach(write);
+    else write(obj);
+    write('\nendobj\n');
+  }
+  const xrefOffset = pos;
+  write(`xref\n0 ${objects.length}\n0000000000 65535 f \n`);
+  for(let i=1; i<objects.length; i++){
+    write(`${String(offsets[i]).padStart(10,'0')} 00000 n \n`);
+  }
+  write(`trailer\n<< /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
+
+  const pdfBytes = new Uint8Array(pos);
+  let cursor = 0;
+  chunks.forEach(chunk => {
+    pdfBytes.set(chunk,cursor);
+    cursor += chunk.length;
+  });
+  return new Blob([pdfBytes], {type:'application/pdf'});
+}
+
+async function openPrintablePdf(){
+  if(!state.cards || !state.layouts) return;
+  const btn = $('printBtn');
+  const original = btn.textContent;
+  const pdfWindow = window.open('', '_blank');
+  if(pdfWindow){
+    pdfWindow.document.write('<!doctype html><title>Building PDF</title><body style="font-family:system-ui,sans-serif;padding:24px">Building printable PDF...</body>');
+    pdfWindow.document.close();
+  }
+  btn.disabled = true;
+  try{
+    const images = [];
+    for(let i=0; i<state.cards.length; i++){
+      btn.textContent = `Building PDF ${i+1}/${state.cards.length}`;
+      await new Promise(requestAnimationFrame);
+      images.push(await cardToJpeg(state.cards[i], state.layouts[i], i));
+    }
+    btn.textContent = 'Opening PDF...';
+    const pdf = buildDeckPdf(images, currentPrintMm());
+    const url = URL.createObjectURL(pdf);
+    if(pdfWindow){
+      pdfWindow.location.href = url;
+    }else{
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'find-it-deck.pdf';
+      a.click();
+    }
+    setTimeout(()=>URL.revokeObjectURL(url), 120000);
+  }catch(err){
+    console.error(err);
+    if(pdfWindow && !pdfWindow.closed){
+      pdfWindow.document.body.textContent = 'Could not build the PDF. Try regenerating the deck, then print again.';
+    }
+    alert('Could not build the PDF. Try regenerating the deck, then print again.');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = original;
+  }
 }
 
 /* init */
