@@ -1033,7 +1033,8 @@ function waitForImage(img){
 }
 
 async function cardToJpeg(card, layout, index){
-  const svg = cardSVG(card, layout, index);
+  const px = 2400;
+  const svg = cardSVG(card, layout, index).replace('<svg ', `<svg width="${px}" height="${px}" `);
   const blob = new Blob([svg], {type:'image/svg+xml;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const img = new Image();
@@ -1043,7 +1044,6 @@ async function cardToJpeg(card, layout, index){
   await loaded;
   URL.revokeObjectURL(url);
 
-  const px = 1000;
   const canvas = document.createElement('canvas');
   canvas.width = px;
   canvas.height = px;
@@ -1051,7 +1051,7 @@ async function cardToJpeg(card, layout, index){
   ctx.fillStyle = '#fff';
   ctx.fillRect(0,0,px,px);
   ctx.drawImage(img,0,0,px,px);
-  const dataUrl = canvas.toDataURL('image/jpeg',0.94);
+  const dataUrl = canvas.toDataURL('image/jpeg',1);
   return {
     width:px,
     height:px,
@@ -1161,6 +1161,7 @@ async function openPrintablePdf(){
   }
   btn.disabled = true;
   try{
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
     const images = [];
     for(let i=0; i<state.cards.length; i++){
       btn.textContent = `Building PDF ${i+1}/${state.cards.length}`;
