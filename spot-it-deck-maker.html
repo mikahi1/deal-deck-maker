@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spot-It Deck Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#23263B;
+  --ink-soft:#5B607A;
+  --paper:#F4F6FB;
+  --card:#FFFFFF;
+  --line:#DDE1EE;
+  --red:#F4442E;
+  --yellow:#FFC93C;
+  --teal:#00B8A9;
+  --purple:#6C5CE7;
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.55;
+}
+h1,h2,h3{font-family:'Fredoka',sans-serif;line-height:1.15}
+
+/* ---------- header ---------- */
+header{
+  max-width:1060px;margin:0 auto;padding:44px 24px 8px;
+  display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+}
+.logo-cards{position:relative;width:96px;height:76px;flex:none}
+.logo-cards .mini{
+  position:absolute;width:64px;height:64px;border-radius:50%;
+  background:#fff;border:2px solid var(--line);
+  display:grid;place-items:center;font-size:15px;
+  box-shadow:0 4px 10px rgba(35,38,59,.10);
+}
+.logo-cards .mini span{position:absolute}
+.logo-cards .m1{left:0;top:4px;transform:rotate(-8deg)}
+.logo-cards .m2{left:34px;top:8px;transform:rotate(9deg)}
+.hero-text h1{font-size:clamp(28px,4.5vw,40px);font-weight:700}
+.hero-text h1 em{font-style:normal;color:var(--red)}
+.hero-text p{color:var(--ink-soft);max-width:56ch;margin-top:4px}
+
+main{max-width:1060px;margin:0 auto;padding:16px 24px 80px}
+
+/* ---------- step shells ---------- */
+.step{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px 26px 28px;margin-top:22px;
+}
+.step-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.step-dot{
+  width:40px;height:40px;border-radius:50%;flex:none;
+  font-family:'Fredoka';font-weight:600;font-size:18px;
+  display:grid;place-items:center;color:#fff;
+}
+.s1 .step-dot{background:var(--red)}
+.s2 .step-dot{background:var(--teal)}
+.s3 .step-dot{background:var(--purple)}
+.step-head h2{font-size:21px}
+.step-head .sub{color:var(--ink-soft);font-size:14.5px}
+
+/* ---------- step 1: deck size ---------- */
+.deck-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.deck-opt{
+  border:2px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;
+  background:#fff;text-align:left;font-family:inherit;transition:border-color .15s, box-shadow .15s;
+}
+.deck-opt:hover{border-color:#b9c0d8}
+.deck-opt.on{border-color:var(--red);box-shadow:0 0 0 3px rgba(244,68,46,.14)}
+.deck-opt .name{font-family:'Fredoka';font-weight:600;font-size:17px;display:flex;justify-content:space-between;align-items:center}
+.deck-opt .tag{font-size:11px;font-weight:800;letter-spacing:.4px;color:var(--red);text-transform:uppercase}
+.deck-opt .meta{color:var(--ink-soft);font-size:13.5px;margin-top:5px}
+
+/* ---------- step 2: symbols ---------- */
+.sym-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.count-pill{
+  font-family:'Fredoka';font-weight:600;font-size:16px;
+  background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:7px 16px;
+}
+.count-pill b{color:var(--teal)}
+.count-pill.done b{color:var(--red)}
+.btn{
+  font-family:'Nunito';font-weight:800;font-size:14px;border:none;cursor:pointer;
+  border-radius:999px;padding:10px 18px;transition:transform .08s, filter .15s;
+}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-ghost{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:#b9c0d8}
+.btn-red{background:var(--red);color:#fff;font-size:16px;padding:13px 30px}
+.btn-red:hover,.btn-teal:hover{filter:brightness(1.06)}
+
+.chosen{
+  display:flex;flex-wrap:wrap;gap:8px;min-height:56px;
+  border:1.5px dashed var(--line);border-radius:14px;padding:10px;margin-bottom:16px;
+  align-content:flex-start;
+}
+.chosen .empty-hint{color:var(--ink-soft);font-size:14px;align-self:center;padding:6px 8px}
+.chip{
+  width:46px;height:46px;border-radius:50%;position:relative;flex:none;
+  background:#fff;border:1.5px solid var(--line);
+  display:grid;place-items:center;font-size:24px;overflow:visible;
+}
+.chip img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.chip .rm{
+  position:absolute;top:-6px;right:-6px;width:19px;height:19px;border-radius:50%;
+  background:var(--ink);color:#fff;font-size:11px;line-height:19px;text-align:center;
+  cursor:pointer;opacity:0;transition:opacity .12s;border:none;font-weight:800;
+}
+.chip:hover .rm{opacity:1}
+
+details.palette{border:1.5px solid var(--line);border-radius:14px;background:#fff}
+details.palette summary{
+  cursor:pointer;padding:12px 16px;font-weight:800;font-size:14.5px;list-style:none;
+  display:flex;align-items:center;gap:8px;
+}
+details.palette summary::-webkit-details-marker{display:none}
+details.palette summary .arrow{transition:transform .15s;font-size:12px;color:var(--ink-soft)}
+details.palette[open] summary .arrow{transform:rotate(90deg)}
+.pal-grid{display:flex;flex-wrap:wrap;gap:4px;padding:4px 14px 14px}
+.pal-e{
+  width:40px;height:40px;font-size:23px;border-radius:10px;border:none;background:transparent;
+  cursor:pointer;display:grid;place-items:center;transition:background .1s;
+}
+.pal-e:hover{background:var(--paper)}
+.pal-e.used{background:rgba(0,184,169,.16);outline:2px solid var(--teal);outline-offset:-2px}
+
+/* ---------- step 3: options ---------- */
+.opts{display:flex;gap:26px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.opt{display:flex;align-items:center;gap:9px;font-size:14.5px;font-weight:700}
+.opt select{
+  font-family:inherit;font-weight:700;font-size:14px;padding:7px 10px;
+  border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);
+}
+.switch{position:relative;width:42px;height:24px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.switch .track{
+  position:absolute;inset:0;border-radius:999px;background:#CBD1E4;transition:background .15s;cursor:pointer;
+}
+.switch .track::after{
+  content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;
+  background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+.switch input:checked + .track{background:var(--teal)}
+.switch input:checked + .track::after{transform:translateX(18px)}
+.switch input:focus-visible + .track{outline:3px solid rgba(0,184,169,.4)}
+.gen-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.gen-note{color:var(--ink-soft);font-size:13.5px}
+
+/* ---------- preview ---------- */
+#preview{margin-top:30px;display:none}
+.prev-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.prev-head h2{font-size:22px}
+.verify{
+  font-size:13.5px;font-weight:800;color:var(--teal);
+  background:rgba(0,184,169,.1);border-radius:999px;padding:6px 14px;
+}
+.prev-actions{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+#deck{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:18px;margin-top:18px;
+}
+.card-wrap{text-align:center}
+.card-svg{width:100%;height:auto;display:block;filter:drop-shadow(0 3px 8px rgba(35,38,59,.12))}
+.card-num{font-size:11.5px;color:var(--ink-soft);font-weight:700;margin-top:5px}
+
+/* ---------- photo editor ---------- */
+body.editor-open{overflow:hidden}
+.photo-editor{
+  position:fixed;inset:0;z-index:20;display:none;flex-direction:column;
+  background:#050609;color:#fff;
+}
+.photo-editor.open{display:flex}
+.photo-top{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:18px clamp(16px,4vw,42px);border-bottom:1px solid rgba(255,255,255,.12);
+}
+.photo-top h2{font-size:22px}
+.photo-top p{font-size:13px;color:rgba(255,255,255,.68);margin-top:2px;font-weight:700}
+.photo-close{
+  width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.08);color:#fff;font-size:24px;line-height:36px;
+  cursor:pointer;flex:none;
+}
+.photo-editor .btn-ghost{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.24);color:#fff}
+.photo-main{
+  flex:1;min-height:0;display:grid;grid-template-rows:minmax(280px,1fr) auto;
+}
+.photo-work{
+  min-height:0;display:grid;place-items:center;padding:26px 18px 12px;
+}
+.photo-frame{
+  position:relative;width:min(760px,92vw);height:min(460px,48vh);
+  min-height:280px;background:#111;overflow:hidden;touch-action:none;cursor:grab;
+  border:1px solid rgba(255,255,255,.10);box-shadow:0 12px 34px rgba(0,0,0,.28);
+}
+.photo-frame.dragging{cursor:grabbing}
+.photo-frame canvas{width:100%;height:100%;display:block}
+.crop-window{
+  position:absolute;left:50%;top:50%;width:var(--crop-size,320px);aspect-ratio:1;
+  transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;overflow:hidden;
+  border:3px solid rgba(255,255,255,.82);box-shadow:0 0 0 9999px rgba(0,0,0,.58);
+}
+.crop-window::before{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(to right, transparent 32.8%, rgba(255,255,255,.36) 33%, rgba(255,255,255,.36) 33.4%, transparent 33.6%, transparent 66.2%, rgba(255,255,255,.36) 66.5%, rgba(255,255,255,.36) 66.9%, transparent 67.1%),
+    linear-gradient(to bottom, transparent 32.8%, rgba(255,255,255,.36) 33%, rgba(255,255,255,.36) 33.4%, transparent 33.6%, transparent 66.2%, rgba(255,255,255,.36) 66.5%, rgba(255,255,255,.36) 66.9%, transparent 67.1%);
+}
+.photo-hint{
+  text-align:center;color:#fff;font-size:14px;font-weight:800;margin-top:8px;
+  text-shadow:0 1px 2px rgba(0,0,0,.55);
+}
+.photo-controls{
+  display:grid;grid-template-columns:minmax(210px,1fr) minmax(210px,1fr) auto;
+  gap:18px;align-items:end;padding:18px clamp(16px,4vw,42px) 22px;
+  border-top:1px solid rgba(255,255,255,.12);background:#090A0E;
+}
+.photo-control{display:grid;gap:8px;font-size:13px;font-weight:800;color:rgba(255,255,255,.88)}
+.photo-control-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.photo-control output{font-variant-numeric:tabular-nums;color:#fff}
+.photo-control input{
+  width:100%;accent-color:#18B7FF;cursor:pointer;
+}
+.photo-mini-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.photo-icon{
+  width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.24);
+  background:rgba(255,255,255,.08);color:#fff;font-size:21px;font-weight:800;cursor:pointer;
+}
+
+footer{
+  max-width:1060px;margin:0 auto;padding:0 24px 60px;color:var(--ink-soft);font-size:14px;
+}
+footer h3{font-size:17px;color:var(--ink);margin-bottom:6px}
+
+/* ---------- print ---------- */
+@media print{
+  body{background:#fff}
+  header,footer,.step,.prev-head,.photo-editor{display:none !important}
+  main{max-width:none;padding:0}
+  #preview{display:block !important;margin:0}
+  #deck{
+    display:flex;flex-wrap:wrap;gap:4mm;justify-content:flex-start;margin:0;
+  }
+  .card-wrap{break-inside:avoid;page-break-inside:avoid}
+  .card-svg{
+    width:var(--print-size,80mm);height:var(--print-size,80mm);
+    filter:none;
+  }
+  .card-num{display:none}
+}
+@media (max-width:560px){
+  header{padding-top:30px}
+  .step{padding:20px 16px 22px}
+  .photo-top{padding:14px 14px}
+  .photo-frame{width:100%;height:min(430px,50vh);min-height:260px}
+  .photo-controls{grid-template-columns:1fr;gap:14px}
+  .photo-mini-actions{justify-content:space-between}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-cards" aria-hidden="true">
+    <div class="mini m1"><span style="top:8px;left:20px;font-size:18px">🦊</span><span style="bottom:8px;left:9px;font-size:13px;transform:rotate(-20deg)">🍩</span><span style="bottom:10px;right:9px;font-size:15px;transform:rotate(15deg)">⚡</span></div>
+    <div class="mini m2"><span style="top:7px;right:12px;font-size:14px;transform:rotate(25deg)">🎈</span><span style="bottom:7px;left:11px;font-size:18px">🦊</span><span style="top:16px;left:10px;font-size:12px;transform:rotate(-12deg)">🌵</span></div>
+  </div>
+  <div class="hero-text">
+    <h1>Spot-It <em>Deck Studio</em></h1>
+    <p>Build your own matching card game. Every card shares <strong>exactly one</strong> symbol with every other card — guaranteed by the math. Use your own photos, emojis, or a mix of both, then print and cut.</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- STEP 1 -->
+  <section class="step s1">
+    <div class="step-head">
+      <div class="step-dot">1</div>
+      <div>
+        <h2>Pick a deck size</h2>
+        <div class="sub">More symbols per card = harder game (and more symbols to collect).</div>
+      </div>
+    </div>
+    <div class="deck-grid" id="deckGrid"></div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step s2">
+    <div class="step-head">
+      <div class="step-dot">2</div>
+      <div>
+        <h2>Collect your symbols</h2>
+        <div class="sub">Upload photos (pets, family, inside jokes…) and/or tap emojis below.</div>
+      </div>
+    </div>
+
+    <div class="sym-bar">
+      <div class="count-pill" id="countPill"><b id="countNow">0</b> / <span id="countNeed">57</span> symbols</div>
+      <button class="btn btn-teal" id="uploadBtn">📷 Upload photos</button>
+      <button class="btn btn-ghost" id="autoFillBtn">✨ Auto-fill with emojis</button>
+      <button class="btn btn-ghost" id="clearBtn">Clear all</button>
+      <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    </div>
+
+    <div class="chosen" id="chosenGrid">
+      <div class="empty-hint">Your symbols will appear here…</div>
+    </div>
+
+    <details class="palette" open>
+      <summary><span class="arrow">▶</span> Emoji palette — tap to add or remove</summary>
+      <div class="pal-grid" id="palGrid"></div>
+    </details>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step s3">
+    <div class="step-head">
+      <div class="step-dot">3</div>
+      <div>
+        <h2>Generate your deck</h2>
+        <div class="sub">Symbols get mixed sizes — small, medium, large — and land differently on every card.</div>
+      </div>
+    </div>
+
+    <div class="opts">
+      <label class="opt">
+        <span class="switch"><input type="checkbox" id="rotateChk" checked><span class="track"></span></span>
+        Rotate symbols
+      </label>
+      <label class="opt" id="classicWrap">
+        <span class="switch"><input type="checkbox" id="classicChk"><span class="track"></span></span>
+        Classic 55-card box <span style="font-weight:600;color:var(--ink-soft)">(drops 2 of the 57)</span>
+      </label>
+      <label class="opt">Print size
+        <select id="sizeSel">
+          <option value="60mm">6 cm — travel</option>
+          <option value="80mm" selected>8 cm — classic</option>
+          <option value="95mm">9.5 cm — jumbo</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="gen-row">
+      <button class="btn btn-red" id="genBtn" disabled>Generate deck</button>
+      <span class="gen-note" id="genNote">Add symbols to unlock.</span>
+    </div>
+  </section>
+
+  <!-- PREVIEW -->
+  <section id="preview">
+    <div class="prev-head">
+      <h2>Your deck</h2>
+      <span class="verify" id="verifyMsg"></span>
+      <div class="prev-actions">
+        <button class="btn btn-ghost" id="shuffleBtn">🔀 Shuffle layouts</button>
+        <button class="btn btn-red" id="printBtn">🖨️ Print deck</button>
+      </div>
+    </div>
+    <div id="deck"></div>
+  </section>
+
+</main>
+
+<section class="photo-editor" id="photoEditor" aria-hidden="true">
+  <div class="photo-top">
+    <button class="photo-close" id="photoCancelBtn" type="button" aria-label="Close photo editor">×</button>
+    <div>
+      <h2>Adjust photo</h2>
+      <p id="photoQueueLabel">Photo 1 of 1</p>
+    </div>
+    <button class="btn btn-teal" id="photoAddBtn" type="button">Add photo</button>
+  </div>
+  <div class="photo-main">
+    <div class="photo-work">
+      <div>
+        <div class="photo-frame" id="photoFrame" aria-label="Drag to reposition photo">
+          <canvas id="photoCanvas"></canvas>
+          <div class="crop-window" id="cropWindow" aria-hidden="true"></div>
+        </div>
+        <div class="photo-hint">Drag to reposition photo</div>
+      </div>
+    </div>
+    <div class="photo-controls">
+      <label class="photo-control" for="zoomRange">
+        <span class="photo-control-row"><span>Zoom</span><output id="zoomValue">1.0</output></span>
+        <input type="range" id="zoomRange" min="1" max="3" step="0.01" value="1">
+      </label>
+      <label class="photo-control" for="angleRange">
+        <span class="photo-control-row"><span>Straighten</span><output id="angleValue">0</output></span>
+        <input type="range" id="angleRange" min="-45" max="45" step="1" value="0">
+      </label>
+      <div class="photo-mini-actions">
+        <button class="photo-icon" id="rotatePhotoBtn" type="button" aria-label="Rotate 90 degrees">↻</button>
+        <button class="btn btn-ghost" id="photoResetBtn" type="button">Reset</button>
+        <button class="btn btn-ghost" id="photoSkipBtn" type="button">Skip</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <h3>Print &amp; play</h3>
+  <p>Print on thick cardstock (or laminate regular paper), cut along each circle, and shuffle. Deal the deck out, flip cards, and race to call the one symbol your card shares with the pile. Tip: for photo symbols, close-up faces and single objects read best at small sizes.</p>
+</footer>
+
+<script>
+'use strict';
+
+/* ================= deck math =================
+   Projective plane of prime order n:
+   n²+n+1 cards, n²+n+1 symbols, n+1 symbols per card,
+   any two cards share exactly one symbol. */
+const DECK_OPTS = [
+  {n:2, name:'Mini',    tag:'ages 3+',  desc:'3 symbols per card · 7 cards · 7 symbols'},
+  {n:3, name:'Junior',  tag:'quick',    desc:'4 symbols per card · 13 cards · 13 symbols'},
+  {n:5, name:'Party',   tag:'popular',  desc:'6 symbols per card · 31 cards · 31 symbols'},
+  {n:7, name:'Classic', tag:'the real deal', desc:'8 symbols per card · 57 cards · 57 symbols'},
+];
+
+function genPlane(n){
+  const cards = [];
+  for(let m=0; m<n; m++){
+    for(let b=0; b<n; b++){
+      const c = [];
+      for(let x=0; x<n; x++) c.push(x*n + ((m*x + b) % n));
+      c.push(n*n + m);
+      cards.push(c);
+    }
+  }
+  for(let x=0; x<n; x++){
+    const c = [];
+    for(let y=0; y<n; y++) c.push(x*n + y);
+    c.push(n*n + n);
+    cards.push(c);
+  }
+  const inf = [];
+  for(let m=0; m<=n; m++) inf.push(n*n + m);
+  cards.push(inf);
+  return cards;
+}
+
+function verifyDeck(cards){
+  for(let i=0; i<cards.length; i++){
+    const setI = new Set(cards[i]);
+    for(let j=i+1; j<cards.length; j++){
+      let shared = 0;
+      for(const s of cards[j]) if(setI.has(s)) shared++;
+      if(shared !== 1) return false;
+    }
+  }
+  return true;
+}
+
+/* ================= symbol layout =================
+   Circle packing by random init + relaxation, in a
+   200×200 viewBox. Returns {x,y,r} per symbol.       */
+function layoutCard(k){
+  const R = 96;
+  const factors = [1.32, 1.0, 0.76];             // large / medium / small
+  const sizes = [];
+  for(let i=0; i<k; i++) sizes.push(factors[i % 3]);
+  shuffle(sizes);
+  const base = R * Math.sqrt(0.50 / k);
+
+  let items = null;
+  for(let attempt=0; attempt<9; attempt++){
+    const shrink = Math.pow(0.93, attempt);
+    items = sizes.map(s => {
+      const r = base * s * shrink;
+      const ang = Math.random() * Math.PI * 2;
+      const d = Math.sqrt(Math.random()) * (R - r);
+      return {x: Math.cos(ang)*d, y: Math.sin(ang)*d, r};
+    });
+    const pad = 2.5 * shrink;
+    let ok = false;
+    for(let it=0; it<450 && !ok; it++){
+      ok = true;
+      for(let i=0; i<k; i++){
+        for(let j=i+1; j<k; j++){
+          const a = items[i], b = items[j];
+          let dx = b.x - a.x, dy = b.y - a.y;
+          let d = Math.hypot(dx, dy);
+          const min = a.r + b.r + pad;
+          if(d < min){
+            ok = false;
+            if(d < 0.01){ dx = Math.random()-.5; dy = Math.random()-.5; d = Math.hypot(dx,dy); }
+            const push = (min - d) / 2 / d;
+            a.x -= dx*push; a.y -= dy*push;
+            b.x += dx*push; b.y += dy*push;
+          }
+        }
+      }
+      for(const p of items){
+        const d = Math.hypot(p.x, p.y), max = R - p.r;
+        if(d > max + 0.1){ const f = max / d; p.x *= f; p.y *= f; ok = false; }
+      }
+    }
+    if(ok) break;
+  }
+  return items.map(p => ({x: p.x + 100, y: p.y + 100, r: p.r}));
+}
+
+function shuffle(arr){
+  for(let i=arr.length-1; i>0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/* ================= emoji pool ================= */
+const EMOJI_POOL = [
+'🦊','🐸','🐙','🦋','🐝','🐢','🦉','🐬','🦀','🐞','🦄','🐳','🦁','🐼','🐨','🦒','🦩','🦜','🐌','🦔',
+'🍩','🍕','🍉','🍓','🥑','🌮','🍦','🍪','🧁','🍔','🍟','🌭','🍿','🥨','🍒','🍍','🥕','🌶️','🍄','🧀',
+'⚽','🏀','🎾','🎳','🎯','🎸','🥁','🎺','🎨','🎭','🎲','🧩','🪁','🛹','🏆','🎮','♟️','🥊','🏓','🪀',
+'🚗','🚀','✈️','🚂','⛵','🚲','🛸','🚁','🏍️','🚜','⚓','🗺️','🎈','🧭','⛺','🗿','🎡','🏰','🗼','🌋',
+'🌵','🌈','⭐','🌙','☀️','❄️','🌊','🍀','🌻','🌸','🍁','🌴','⚡','🔥','💧','🪐','🌍','☂️','🫧','🌺',
+'🎃','👑','💎','🔑','⏰','🎁','📚','✏️','🔮','🧲','💡','📷','🔔','🧸','🪄','🎀','🧦','👓','🎩','🪆',
+'❤️','💜','🖤','🤖','👻','👽','💀','🤡','😺','🙈','🦖','🐉','🧜‍♀️','🧙','🦸','🍭','🥇','🎪','🛟','🪩'
+];
+
+/* ================= state ================= */
+const state = {
+  n: 7,
+  symbols: [],   // {type:'emoji'|'image', value}
+  cards: null,   // array of symbol-index arrays
+  layouts: null, // per-card layout + rotations
+};
+const needed = () => state.n * state.n + state.n + 1;
+const perCard = () => state.n + 1;
+
+/* ================= DOM refs ================= */
+const $ = id => document.getElementById(id);
+const deckGrid = $('deckGrid'), palGrid = $('palGrid'), chosenGrid = $('chosenGrid');
+const countNow = $('countNow'), countNeed = $('countNeed'), countPill = $('countPill');
+const genBtn = $('genBtn'), genNote = $('genNote'), deckEl = $('deck');
+
+/* ---------- step 1 UI ---------- */
+DECK_OPTS.forEach(opt => {
+  const b = document.createElement('button');
+  b.className = 'deck-opt' + (opt.n === state.n ? ' on' : '');
+  b.innerHTML = `<div class="name">${opt.name} <span class="tag">${opt.tag}</span></div>
+                 <div class="meta">${opt.desc}</div>`;
+  b.addEventListener('click', () => {
+    state.n = opt.n;
+    document.querySelectorAll('.deck-opt').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    $('classicWrap').style.display = (opt.n === 7) ? 'flex' : 'none';
+    refresh();
+  });
+  deckGrid.appendChild(b);
+});
+
+/* ---------- step 2 UI ---------- */
+EMOJI_POOL.forEach(e => {
+  const b = document.createElement('button');
+  b.className = 'pal-e';
+  b.textContent = e;
+  b.title = 'Add ' + e;
+  b.addEventListener('click', () => {
+    const idx = state.symbols.findIndex(s => s.type === 'emoji' && s.value === e);
+    if(idx >= 0){ state.symbols.splice(idx, 1); }
+    else if(state.symbols.length < needed()){ state.symbols.push({type:'emoji', value:e}); }
+    else { flashPill(); return; }
+    refresh();
+  });
+  palGrid.appendChild(b);
+});
+
+$('uploadBtn').addEventListener('click', () => $('fileInput').click());
+$('fileInput').addEventListener('change', ev => {
+  const files = [...ev.target.files].filter(f => f.type.startsWith('image/'));
+  ev.target.value = '';
+  if(files.length) openPhotoEditor(files);
+});
+
+/* ---------- photo editor ---------- */
+const photoEls = {
+  modal: $('photoEditor'),
+  frame: $('photoFrame'),
+  crop: $('cropWindow'),
+  canvas: $('photoCanvas'),
+  queueLabel: $('photoQueueLabel'),
+  zoom: $('zoomRange'),
+  zoomValue: $('zoomValue'),
+  angle: $('angleRange'),
+  angleValue: $('angleValue'),
+  add: $('photoAddBtn'),
+  cancel: $('photoCancelBtn'),
+  skip: $('photoSkipBtn'),
+  reset: $('photoResetBtn'),
+  rotate: $('rotatePhotoBtn'),
+};
+const photoEdit = {
+  queue: [],
+  index: 0,
+  image: null,
+  zoom: 1.08,
+  angle: 0,
+  quarterTurns: 0,
+  offsetX: 0,
+  offsetY: 0,
+  baseScale: 1,
+  cropSize: 320,
+  frameW: 0,
+  frameH: 0,
+  dragging: false,
+  dragStartX: 0,
+  dragStartY: 0,
+  dragOffsetX: 0,
+  dragOffsetY: 0,
+};
+
+function openPhotoEditor(files){
+  const slots = needed() - state.symbols.length;
+  if(slots <= 0){ flashPill(); return; }
+  photoEdit.queue = files.slice(0, slots);
+  photoEdit.index = 0;
+  if(files.length > slots) flashPill();
+  loadEditorPhoto();
+}
+
+async function loadEditorPhoto(){
+  if(photoEdit.index >= photoEdit.queue.length || state.symbols.length >= needed()){
+    closePhotoEditor();
+    refresh();
+    return;
+  }
+
+  try{
+    photoEdit.image = await readImageFile(photoEdit.queue[photoEdit.index]);
+  }catch(e){
+    console.error('Could not read image', e);
+    photoEdit.index++;
+    loadEditorPhoto();
+    return;
+  }
+
+  resetPhotoTransform();
+  photoEls.queueLabel.textContent = `Photo ${photoEdit.index + 1} of ${photoEdit.queue.length}`;
+  photoEls.add.textContent = photoEdit.index === photoEdit.queue.length - 1 ? 'Add photo' : 'Add & next';
+  photoEls.modal.classList.add('open');
+  photoEls.modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('editor-open');
+  requestAnimationFrame(() => {
+    fitPhotoEditor();
+    renderPhotoEditor();
+  });
+}
+
+function closePhotoEditor(){
+  photoEls.modal.classList.remove('open');
+  photoEls.modal.setAttribute('aria-hidden', 'true');
+  photoEls.frame.classList.remove('dragging');
+  document.body.classList.remove('editor-open');
+  photoEdit.queue = [];
+  photoEdit.index = 0;
+  photoEdit.image = null;
+  photoEdit.dragging = false;
+}
+
+function readImageFile(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      res(img);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      rej(new Error('Could not read image'));
+    };
+    img.src = url;
+  });
+}
+
+function resetPhotoTransform(){
+  photoEdit.zoom = 1.08;
+  photoEdit.angle = 0;
+  photoEdit.quarterTurns = 0;
+  photoEdit.offsetX = 0;
+  photoEdit.offsetY = 0;
+  photoEls.zoom.value = photoEdit.zoom;
+  photoEls.angle.value = photoEdit.angle;
+}
+
+function totalPhotoAngle(){
+  return (photoEdit.quarterTurns * 90 + photoEdit.angle) * Math.PI / 180;
+}
+
+function rotatedPhotoBounds(){
+  if(!photoEdit.image) return {w: 1, h: 1};
+  const a = totalPhotoAngle();
+  const c = Math.abs(Math.cos(a));
+  const s = Math.abs(Math.sin(a));
+  return {
+    w: photoEdit.image.width * c + photoEdit.image.height * s,
+    h: photoEdit.image.width * s + photoEdit.image.height * c,
+  };
+}
+
+function fitPhotoEditor(){
+  if(!photoEdit.image) return;
+  const rect = photoEls.frame.getBoundingClientRect();
+  photoEdit.frameW = rect.width;
+  photoEdit.frameH = rect.height;
+  photoEdit.cropSize = Math.max(180, Math.min(rect.width, rect.height) * 0.74);
+  photoEls.frame.style.setProperty('--crop-size', `${photoEdit.cropSize}px`);
+  const box = rotatedPhotoBounds();
+  photoEdit.baseScale = Math.max(photoEdit.cropSize / box.w, photoEdit.cropSize / box.h) * 1.02;
+  clampPhotoOffset();
+}
+
+function clampPhotoOffset(){
+  if(!photoEdit.image) return;
+  const box = rotatedPhotoBounds();
+  const shownW = box.w * photoEdit.baseScale * photoEdit.zoom;
+  const shownH = box.h * photoEdit.baseScale * photoEdit.zoom;
+  const maxX = Math.max(0, (shownW - photoEdit.cropSize) / 2);
+  const maxY = Math.max(0, (shownH - photoEdit.cropSize) / 2);
+  photoEdit.offsetX = Math.max(-maxX, Math.min(maxX, photoEdit.offsetX));
+  photoEdit.offsetY = Math.max(-maxY, Math.min(maxY, photoEdit.offsetY));
+}
+
+function renderPhotoEditor(){
+  if(!photoEdit.image) return;
+  const c = photoEls.canvas;
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.max(1, Math.round(photoEdit.frameW));
+  const h = Math.max(1, Math.round(photoEdit.frameH));
+  if(c.width !== Math.round(w * dpr) || c.height !== Math.round(h * dpr)){
+    c.width = Math.round(w * dpr);
+    c.height = Math.round(h * dpr);
+  }
+  const ctx = c.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#15171D';
+  ctx.fillRect(0, 0, w, h);
+  drawPhoto(ctx, w / 2 + photoEdit.offsetX, h / 2 + photoEdit.offsetY, photoEdit.baseScale * photoEdit.zoom);
+  photoEls.zoomValue.textContent = Number(photoEdit.zoom).toFixed(1);
+  photoEls.angleValue.textContent = `${Math.round(photoEdit.angle)}`;
+}
+
+function drawPhoto(ctx, x, y, scale){
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(totalPhotoAngle());
+  ctx.scale(scale, scale);
+  ctx.drawImage(photoEdit.image, -photoEdit.image.width / 2, -photoEdit.image.height / 2);
+  ctx.restore();
+}
+
+function exportEditedPhoto(){
+  fitPhotoEditor();
+  const outSize = 420;
+  const c = document.createElement('canvas');
+  c.width = outSize;
+  c.height = outSize;
+  const ctx = c.getContext('2d');
+  const ratio = outSize / photoEdit.cropSize;
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, outSize, outSize);
+  drawPhoto(
+    ctx,
+    outSize / 2 + photoEdit.offsetX * ratio,
+    outSize / 2 + photoEdit.offsetY * ratio,
+    photoEdit.baseScale * photoEdit.zoom * ratio
+  );
+  return c.toDataURL('image/jpeg', 0.9);
+}
+
+function advancePhotoEditor(){
+  photoEdit.index++;
+  if(photoEdit.index >= photoEdit.queue.length || state.symbols.length >= needed()){
+    closePhotoEditor();
+    refresh();
+  }else{
+    loadEditorPhoto();
+  }
+}
+
+photoEls.add.addEventListener('click', () => {
+  if(!photoEdit.image) return;
+  state.symbols.push({type:'image', value:exportEditedPhoto()});
+  refresh();
+  advancePhotoEditor();
+});
+photoEls.skip.addEventListener('click', advancePhotoEditor);
+photoEls.cancel.addEventListener('click', () => { closePhotoEditor(); refresh(); });
+photoEls.reset.addEventListener('click', () => {
+  resetPhotoTransform();
+  fitPhotoEditor();
+  renderPhotoEditor();
+});
+photoEls.rotate.addEventListener('click', () => {
+  photoEdit.quarterTurns = (photoEdit.quarterTurns + 1) % 4;
+  fitPhotoEditor();
+  renderPhotoEditor();
+});
+photoEls.zoom.addEventListener('input', ev => {
+  photoEdit.zoom = Number(ev.target.value);
+  clampPhotoOffset();
+  renderPhotoEditor();
+});
+photoEls.angle.addEventListener('input', ev => {
+  photoEdit.angle = Number(ev.target.value);
+  fitPhotoEditor();
+  renderPhotoEditor();
+});
+photoEls.frame.addEventListener('pointerdown', ev => {
+  if(!photoEdit.image) return;
+  photoEdit.dragging = true;
+  photoEdit.dragStartX = ev.clientX;
+  photoEdit.dragStartY = ev.clientY;
+  photoEdit.dragOffsetX = photoEdit.offsetX;
+  photoEdit.dragOffsetY = photoEdit.offsetY;
+  photoEls.frame.classList.add('dragging');
+  photoEls.frame.setPointerCapture(ev.pointerId);
+});
+photoEls.frame.addEventListener('pointermove', ev => {
+  if(!photoEdit.dragging) return;
+  photoEdit.offsetX = photoEdit.dragOffsetX + ev.clientX - photoEdit.dragStartX;
+  photoEdit.offsetY = photoEdit.dragOffsetY + ev.clientY - photoEdit.dragStartY;
+  clampPhotoOffset();
+  renderPhotoEditor();
+});
+function stopPhotoDrag(ev){
+  if(!photoEdit.dragging) return;
+  photoEdit.dragging = false;
+  photoEls.frame.classList.remove('dragging');
+  try{
+    if(ev.pointerId !== undefined) photoEls.frame.releasePointerCapture(ev.pointerId);
+  }catch(e){}
+}
+photoEls.frame.addEventListener('pointerup', stopPhotoDrag);
+photoEls.frame.addEventListener('pointercancel', stopPhotoDrag);
+photoEls.frame.addEventListener('wheel', ev => {
+  if(!photoEls.modal.classList.contains('open')) return;
+  ev.preventDefault();
+  photoEdit.zoom = Math.max(1, Math.min(3, photoEdit.zoom - ev.deltaY * 0.0015));
+  photoEls.zoom.value = photoEdit.zoom;
+  clampPhotoOffset();
+  renderPhotoEditor();
+}, {passive:false});
+window.addEventListener('resize', () => {
+  if(!photoEls.modal.classList.contains('open')) return;
+  fitPhotoEditor();
+  renderPhotoEditor();
+});
+window.addEventListener('keydown', ev => {
+  if(ev.key === 'Escape' && photoEls.modal.classList.contains('open')){
+    closePhotoEditor();
+    refresh();
+  }
+});
+
+$('autoFillBtn').addEventListener('click', () => {
+  const used = new Set(state.symbols.filter(s => s.type === 'emoji').map(s => s.value));
+  for(const e of EMOJI_POOL){
+    if(state.symbols.length >= needed()) break;
+    if(!used.has(e)){ state.symbols.push({type:'emoji', value:e}); used.add(e); }
+  }
+  refresh();
+});
+
+$('clearBtn').addEventListener('click', () => {
+  if(state.symbols.length && !confirm('Remove all symbols?')) return;
+  state.symbols = [];
+  refresh();
+});
+
+function flashPill(){
+  countPill.style.outline = '3px solid rgba(244,68,46,.5)';
+  setTimeout(() => countPill.style.outline = '', 500);
+}
+
+/* ---------- refresh symbols UI ---------- */
+function refresh(){
+  const need = needed();
+  countNeed.textContent = need;
+  countNow.textContent = state.symbols.length;
+  countPill.classList.toggle('done', state.symbols.length >= need);
+
+  chosenGrid.innerHTML = '';
+  if(!state.symbols.length){
+    chosenGrid.innerHTML = '<div class="empty-hint">Your symbols will appear here…</div>';
+  }
+  state.symbols.forEach((s, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.innerHTML = (s.type === 'emoji')
+      ? s.value
+      : `<img src="${s.value}" alt="uploaded symbol ${i+1}">`;
+    const rm = document.createElement('button');
+    rm.className = 'rm'; rm.textContent = '✕'; rm.title = 'Remove';
+    rm.addEventListener('click', () => { state.symbols.splice(i,1); refresh(); });
+    chip.appendChild(rm);
+    chosenGrid.appendChild(chip);
+  });
+
+  const usedEmojis = new Set(state.symbols.filter(s => s.type==='emoji').map(s => s.value));
+  document.querySelectorAll('.pal-e').forEach(b =>
+    b.classList.toggle('used', usedEmojis.has(b.textContent)));
+
+  const enough = state.symbols.length >= need;
+  genBtn.disabled = !enough;
+  if(enough && state.symbols.length > need){
+    genNote.textContent = `You have ${state.symbols.length}; the first ${need} will be used.`;
+  }else if(enough){
+    genNote.textContent = 'Ready! Every pair of cards will share exactly one symbol.';
+  }else{
+    genNote.textContent = `${need - state.symbols.length} more symbol${need - state.symbols.length === 1 ? '' : 's'} to go.`;
+  }
+}
+
+/* ---------- generation & render ---------- */
+$('genBtn').addEventListener('click', generate);
+$('shuffleBtn').addEventListener('click', () => { buildLayouts(); renderDeck(); });
+$('printBtn').addEventListener('click', () => window.print());
+$('sizeSel').addEventListener('change', ev =>
+  document.documentElement.style.setProperty('--print-size', ev.target.value));
+document.documentElement.style.setProperty('--print-size', '80mm');
+
+function generate(){
+  let cards = genPlane(state.n);
+  if(state.n === 7 && $('classicChk').checked){
+    shuffle(cards);
+    cards = cards.slice(0, 55);
+  }
+  shuffle(cards);
+  // shuffle symbol order within each card so the plane structure isn't visible
+  cards.forEach(c => shuffle(c));
+  state.cards = cards;
+  buildLayouts();
+  renderDeck();
+
+  $('verifyMsg').textContent = verifyDeck(cards)
+    ? `✓ Verified: all ${cards.length * (cards.length-1) / 2} card pairs share exactly one symbol`
+    : '⚠ Verification failed — please regenerate';
+  $('preview').style.display = 'block';
+  $('preview').scrollIntoView({behavior:'smooth'});
+}
+
+function buildLayouts(){
+  const rotate = $('rotateChk').checked;
+  state.layouts = state.cards.map(card =>
+    layoutCard(card.length).map((p, i) => {
+      const sym = state.symbols[card[i]];
+      let rot = 0;
+      if(rotate){
+        rot = (sym && sym.type === 'image')
+          ? Math.round(Math.random()*44 - 22)      // gentle tilt for photos
+          : Math.round(Math.random()*360);          // full spin for emojis
+      }
+      return {...p, rot};
+    })
+  );
+}
+
+function cardSVG(card, layout, cardIdx){
+  let defs = '', body = '';
+  card.forEach((symIdx, i) => {
+    const {x, y, r, rot} = layout[i];
+    const s = state.symbols[symIdx];
+    if(!s) return;
+    const X = x.toFixed(1), Y = y.toFixed(1), R2 = r.toFixed(1);
+    if(s.type === 'emoji'){
+      const fs = (r * 1.7).toFixed(1);
+      body += `<text x="${X}" y="${Y}" font-size="${fs}" text-anchor="middle" dominant-baseline="central" transform="rotate(${rot} ${X} ${Y})">${s.value}</text>`;
+    }else{
+      const id = `cp${cardIdx}_${i}`;
+      defs += `<clipPath id="${id}"><circle cx="${X}" cy="${Y}" r="${R2}"/></clipPath>`;
+      body += `<g clip-path="url(#${id})"><g transform="rotate(${rot} ${X} ${Y})">`
+            + `<image href="${s.value}" x="${(x-r*1.06).toFixed(1)}" y="${(y-r*1.06).toFixed(1)}" width="${(r*2.12).toFixed(1)}" height="${(r*2.12).toFixed(1)}" preserveAspectRatio="xMidYMid slice"/>`
+            + `</g></g>`
+            + `<circle cx="${X}" cy="${Y}" r="${R2}" fill="none" stroke="#E4E7F2" stroke-width="0.8"/>`;
+    }
+  });
+  return `<svg class="card-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Card ${cardIdx+1}">`
+       + (defs ? `<defs>${defs}</defs>` : '')
+       + `<circle cx="100" cy="100" r="99" fill="#ffffff" stroke="#C9CFE2" stroke-width="1.2"/>`
+       + body + `</svg>`;
+}
+
+function renderDeck(){
+  deckEl.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  state.cards.forEach((card, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'card-wrap';
+    wrap.innerHTML = cardSVG(card, state.layouts[i], i)
+                   + `<div class="card-num">card ${i+1} of ${state.cards.length}</div>`;
+    frag.appendChild(wrap);
+  });
+  deckEl.appendChild(frag);
+}
+
+/* init */
+refresh();
+</script>
+</body>
+</html>

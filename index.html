@@ -37,8 +37,7 @@ body.locked .chooser,body:not(.choosing) .chooser{display:none;}
 .gamebtn{min-height:128px;border:1px solid #d8d5cc;border-radius:8px;background:#fff;color:var(--ink);font-family:inherit;font-size:20px;font-weight:900;cursor:pointer;box-shadow:0 12px 34px rgba(29,29,31,.1);}
 .gamebtn:hover{border-color:var(--red);}
 .gamebtn:active{transform:translateY(1px);}
-.gamebtn.disabled{cursor:default;color:#aaa;background:#f4f2ed;}
-.gamebtn.disabled:hover{border-color:#d8d5cc;}
+.gamebtn[href]{display:grid;place-items:center;text-decoration:none;}
 
 /* ---------- app chrome ---------- */
 .appheader{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 22px;background:var(--red);color:#fff;position:sticky;top:0;z-index:20;}
@@ -183,7 +182,7 @@ body.locked .chooser,body:not(.choosing) .chooser{display:none;}
     <h1 id="chooserTitle">Choose a Maker</h1>
     <div class="gamebuttons">
       <button class="gamebtn" type="button" onclick="showDealMaker()">Custom Deal Maker</button>
-      <button class="gamebtn disabled" type="button">Custom Find It Maker</button>
+      <a class="gamebtn" href="spot-it-deck-maker.html">Custom Find It Maker</a>
     </div>
   </div>
 </section>
