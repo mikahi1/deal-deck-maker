@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Custom Game Maker</title>
+<title>Custom Game Maker &mdash; Print-and-Play Card Games</title>
+<meta name="description" content="Design personalized card games — a custom Deal deck with your own places, or a find-the-match deck with your own photos — then print and play at home.">
+<meta name="theme-color" content="#cf372d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='7' y='4' width='18' height='24' rx='3' fill='%23cf372d'/%3E%3Crect x='10' y='7' width='12' height='18' rx='1.5' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3Ctext x='16' y='21' text-anchor='middle' font-family='Arial' font-weight='900' font-size='11' fill='%23fff'%3EM%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Fraunces:opsz,wght@9..144,700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
@@ -16,28 +19,47 @@ body.choosing .appheader,body.choosing .app{display:none;}
 .mk{display:inline-block;}
 .mks{width:9px;height:12px;vertical-align:-1px;}
 
+/* ---------- brand mark: fanned hand of cards ---------- */
+.brandmark{position:relative;width:86px;height:64px;margin:0 auto;}
+.brandmark i{position:absolute;left:50%;bottom:0;width:38px;height:54px;border-radius:6px;background:#fff;border:2px solid #141414;transform-origin:50% 100%;box-shadow:0 3px 8px rgba(29,29,31,.18);}
+.brandmark i::before{content:'';position:absolute;inset:3px;border-radius:3px;}
+.brandmark i:nth-child(1){transform:translateX(-50%) rotate(-16deg);}
+.brandmark i:nth-child(1)::before{background:#7fccea;}
+.brandmark i:nth-child(2){transform:translateX(-50%) rotate(0deg);}
+.brandmark i:nth-child(2)::before{background:var(--red);}
+.brandmark i:nth-child(3){transform:translateX(-50%) rotate(16deg);}
+.brandmark i:nth-child(3)::before{background:#f5c518;}
+
 /* ---------- password gate ---------- */
 .gate{min-height:100vh;display:grid;place-items:center;padding:28px;background:#e7e4dd;}
 body:not(.locked) .gate{display:none;}
-.gatepanel{width:min(420px,100%);background:#fff;border:1px solid #d8d5cc;border-radius:8px;padding:28px;box-shadow:0 18px 45px rgba(29,29,31,.14);}
+.gatepanel{width:min(420px,100%);background:#fff;border:1px solid #d8d5cc;border-radius:12px;padding:32px 28px 28px;box-shadow:0 18px 45px rgba(29,29,31,.14);text-align:center;}
+.gatepanel .brandmark{margin-bottom:16px;}
 .gatepanel h1{margin:0;color:var(--red);font-size:25px;font-weight:900;font-style:italic;letter-spacing:0;}
 .gatepanel p{margin:8px 0 22px;font-size:13px;font-weight:600;line-height:1.45;color:#555;}
-.gatepanel label{display:block;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#555;margin-bottom:7px;}
+.gatepanel label{display:block;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#555;margin-bottom:7px;text-align:left;}
 .gatepanel input{width:100%;border:1.5px solid #d8d5cc;border-radius:8px;padding:12px 13px;font-family:inherit;font-size:16px;font-weight:700;background:#fff;}
-.gatepanel input:focus{outline:none;border-color:var(--red);}
+.gatepanel input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(207,55,45,.14);}
 .gateactions{display:flex;align-items:center;gap:12px;margin-top:14px;}
-.gateerr{min-height:18px;margin:0!important;color:#b22a22!important;font-size:12px!important;font-weight:800!important;}
+.gateerr{min-height:18px;margin:0!important;color:#b22a22!important;font-size:12px!important;font-weight:800!important;text-align:left;}
 
-/* ---------- game chooser ---------- */
-.chooser{min-height:100vh;display:grid;place-items:center;padding:28px;background:var(--table);}
+/* ---------- landing / game chooser ---------- */
+.chooser{min-height:100vh;display:grid;place-items:center;padding:40px 28px;background:var(--table);}
 body.locked .chooser,body:not(.choosing) .chooser{display:none;}
-.chooserpanel{width:min(680px,100%);display:grid;gap:18px;}
-.chooserpanel h1{margin:0;color:var(--red);font-size:30px;font-weight:900;font-style:italic;letter-spacing:0;text-align:center;}
-.gamebuttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
-.gamebtn{min-height:128px;border:1px solid #d8d5cc;border-radius:8px;background:#fff;color:var(--ink);font-family:inherit;font-size:20px;font-weight:900;cursor:pointer;box-shadow:0 12px 34px rgba(29,29,31,.1);}
-.gamebtn:hover{border-color:var(--red);}
-.gamebtn:active{transform:translateY(1px);}
-.gamebtn[href]{display:grid;place-items:center;text-decoration:none;}
+.chooserpanel{width:min(760px,100%);display:grid;gap:8px;}
+.chooserpanel .brandmark{margin-bottom:6px;}
+.chooserpanel h1{margin:0;color:var(--red);font-size:34px;font-weight:900;font-style:italic;letter-spacing:0;text-align:center;}
+.chooserpanel .tagline{margin:6px auto 22px;max-width:46ch;text-align:center;font-size:14px;font-weight:600;line-height:1.5;color:#5a5a55;}
+.gamebuttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+.gamebtn{display:flex;flex-direction:column;align-items:flex-start;gap:0;text-align:left;min-height:150px;border:1px solid #d8d5cc;border-radius:12px;background:#fff;color:var(--ink);font-family:inherit;cursor:pointer;box-shadow:0 12px 34px rgba(29,29,31,.1);padding:20px 20px 18px;text-decoration:none;transition:border-color .12s,transform .12s,box-shadow .12s;}
+.gamebtn:hover{border-color:var(--red);transform:translateY(-2px);box-shadow:0 16px 40px rgba(29,29,31,.14);}
+.gamebtn:active{transform:translateY(0);}
+.gamebtn:focus-visible{outline:3px solid rgba(207,55,45,.4);outline-offset:2px;}
+.gamebtn .gicon{font-size:30px;line-height:1;margin-bottom:12px;}
+.gamebtn .gname{font-size:19px;font-weight:900;line-height:1.15;}
+.gamebtn .gdesc{margin-top:6px;font-size:12.5px;font-weight:600;line-height:1.45;color:#6a6a64;}
+.gamebtn .gcta{margin-top:auto;padding-top:14px;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--red);}
+.chooserfoot{margin-top:18px;text-align:center;font-size:11.5px;font-weight:600;color:#8a8a84;}
 
 /* ---------- app chrome ---------- */
 .appheader{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 22px;background:var(--red);color:#fff;position:sticky;top:0;z-index:20;}
@@ -47,7 +69,13 @@ body.locked .chooser,body:not(.choosing) .chooser{display:none;}
 .btn{border:none;border-radius:8px;padding:10px 15px;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;background:#141414;color:#fff;transition:transform .05s;}
 .btn[href]{display:inline-block;text-decoration:none;}
 .btn:active{transform:translateY(1px);}
+.btn:focus-visible{outline:3px solid rgba(255,255,255,.6);outline-offset:2px;}
 .btn.alt{background:#fff;color:var(--red);}
+.homebtn{display:flex;align-items:center;gap:10px;border:none;background:transparent;color:#fff;font-family:inherit;cursor:pointer;padding:0;text-align:left;}
+.homebtn:focus-visible{outline:3px solid rgba(255,255,255,.6);outline-offset:4px;border-radius:4px;}
+.homebtn .arrow{font-size:17px;font-weight:900;line-height:1;opacity:.85;}
+.resetlink{border:none;background:transparent;color:#9a2c24;font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;}
+.resetlink:hover{color:var(--red);}
 .app{display:grid;grid-template-columns:392px 1fr;}
 .rail{background:var(--rail);border-right:1px solid var(--line);padding:20px;overflow-y:auto;height:calc(100vh - 62px);}
 .rail h2{font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#999;margin:4px 0 12px;}
@@ -166,8 +194,9 @@ body.locked .chooser,body:not(.choosing) .chooser{display:none;}
 
 <section class="gate" id="gate" aria-labelledby="gateTitle">
   <form class="gatepanel" id="gateForm">
+    <div class="brandmark" aria-hidden="true"><i></i><i></i><i></i></div>
     <h1 id="gateTitle">Custom Game Maker</h1>
-    <p>Enter the password to continue.</p>
+    <p>This studio is private. Enter the password to open it.</p>
     <label for="gatePassword">Password</label>
     <input id="gatePassword" type="password" autocomplete="current-password" required>
     <div class="gateactions">
@@ -179,24 +208,39 @@ body.locked .chooser,body:not(.choosing) .chooser{display:none;}
 
 <section class="chooser" id="chooser" aria-labelledby="chooserTitle">
   <div class="chooserpanel">
-    <h1 id="chooserTitle">Choose a Maker</h1>
+    <div class="brandmark" aria-hidden="true"><i></i><i></i><i></i></div>
+    <h1 id="chooserTitle">Custom Game Maker</h1>
+    <p class="tagline">Design a card game around the people and places you love, then print it, cut it, and play it &mdash; box included.</p>
     <div class="gamebuttons">
-      <button class="gamebtn" type="button" onclick="showDealMaker()">Custom Deal Maker</button>
-      <a class="gamebtn" href="spot-it-deck-maker.html">Custom Find It Maker</a>
+      <button class="gamebtn" type="button" onclick="showDealMaker()">
+        <span class="gicon" aria-hidden="true">&#127968;</span>
+        <span class="gname">Deal Deck Maker</span>
+        <span class="gdesc">A property-trading card game built on your favorite spots &mdash; rename every place, personalize the card backs, and print a full 111-card deck.</span>
+        <span class="gcta">Open maker &rarr;</span>
+      </button>
+      <a class="gamebtn" href="spot-it-deck-maker.html">
+        <span class="gicon" aria-hidden="true">&#128269;</span>
+        <span class="gname">Find-It Deck Maker</span>
+        <span class="gdesc">A fast matching game where every card shares exactly one symbol with every other &mdash; build it from your own photos, emojis, or both.</span>
+        <span class="gcta">Open maker &rarr;</span>
+      </a>
     </div>
+    <p class="chooserfoot">Everything prints on standard letter paper. No accounts, nothing saved online.</p>
   </div>
 </section>
 
 <header class="appheader">
-  <div>
-    <h1>Deal Deck Maker</h1>
-    <p>Type your name and your favorite places &mdash; get a full deck to print.</p>
-  </div>
+  <button class="homebtn" type="button" onclick="showChooser()" title="Back to all makers">
+    <span class="arrow" aria-hidden="true">&larr;</span>
+    <span>
+      <h1>Deal Deck Maker</h1>
+      <p>Type your name and your favorite places &mdash; get a full deck to print.</p>
+    </span>
+  </button>
   <div class="hbtns">
-    <a class="btn alt" href="box-cutout.html" target="_blank" rel="noopener">Box cutout</a>
-    <button class="btn alt" onclick="printBoxCutout()">Print box</button>
-    <button class="btn alt" onclick="printBacks()">Print backs</button>
-    <button class="btn" onclick="printFronts()">Print deck</button>
+    <a class="btn alt" href="box-cutout.html" target="_blank" rel="noopener">Design the box</a>
+    <button class="btn alt" onclick="printBacks()">Print card backs</button>
+    <button class="btn" onclick="printFronts()">Print card fronts</button>
   </div>
 </header>
 
@@ -212,8 +256,10 @@ body.locked .chooser,body:not(.choosing) .chooser{display:none;}
       <input id="money" type="text" value="DEAL" placeholder="e.g. DEAL" maxlength="10">
     </div>
     <h2>Your places</h2>
-    <p class="hint">Rename any place. Each group is one color set &mdash; the rents and set sizes stay balanced, you just choose the names.</p>
+    <p class="hint">Rename any place. Each group is one color set &mdash; the rents and set sizes stay balanced, you just choose the names. Your edits are saved on this device automatically.</p>
     <div id="sets"></div>
+    <p class="hint" style="margin-top:4px">Printing tip: use cardstock, set margins to none, and turn on background graphics in the print dialog. Print the fronts, flip the stack, then print the backs.</p>
+    <button class="resetlink" type="button" onclick="resetDeck()">Reset everything to the sample deck</button>
   </aside>
 
   <main class="preview">
@@ -269,8 +315,37 @@ const ACTIONS=[
  ['Hotel',4,'ti-building','Add on top of a house for higher rent.',2],
 ];
 
+const SAVE_KEY='dealDeckMakerState';
 const state={owner:'Rose',money:'DEAL',names:{}};
 SET_DEFS.forEach(d=>state.names[d.key]=d.defaults.slice());
+
+function loadState(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(!raw)return;
+    const saved=JSON.parse(raw);
+    if(typeof saved.owner==='string')state.owner=saved.owner;
+    if(typeof saved.money==='string')state.money=saved.money;
+    if(saved.names)SET_DEFS.forEach(d=>{
+      const arr=saved.names[d.key];
+      if(Array.isArray(arr))d.defaults.forEach((_,i)=>{if(typeof arr[i]==='string')state.names[d.key][i]=arr[i];});
+    });
+  }catch(e){}
+}
+let saveTimer=null;
+function saveState(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));}catch(e){}},250);
+}
+function resetDeck(){
+  if(!confirm('Reset the name, money word, and all place names back to the sample deck?'))return;
+  state.owner='Rose';state.money='DEAL';
+  SET_DEFS.forEach(d=>state.names[d.key]=d.defaults.slice());
+  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+  document.getElementById('owner').value=state.owner;
+  document.getElementById('money').value=state.money;
+  buildForm();render();
+}
 
 function rememberUnlocked(){
   try{return localStorage.getItem(UNLOCK_KEY)==='yes';}
@@ -290,6 +365,9 @@ function showDealMaker(){
   document.body.classList.remove('choosing');
   render();
 }
+function showChooser(){
+  document.body.classList.add('choosing');
+}
 async function hashPassword(value){
   const bytes=new TextEncoder().encode(value);
   const digest=await crypto.subtle.digest('SHA-256',bytes);
@@ -297,7 +375,7 @@ async function hashPassword(value){
 }
 async function passwordMatches(value){
   if(window.crypto&&crypto.subtle&&window.TextEncoder)return (await hashPassword(value))===UNLOCK_HASH;
-  return value===['deal','123'].join('');
+  throw new Error('no-crypto');
 }
 function setupGate(){
   const form=document.getElementById('gateForm');
@@ -308,13 +386,17 @@ function setupGate(){
   form.addEventListener('submit',async e=>{
     e.preventDefault();
     err.textContent='';
-    if(await passwordMatches(input.value)){
-      saveUnlocked();
-      unlockSite();
-      render();
-    }else{
-      err.textContent='Try again.';
-      input.select();
+    try{
+      if(await passwordMatches(input.value)){
+        saveUnlocked();
+        unlockSite();
+        render();
+      }else{
+        err.textContent="That password didn't match. Try again.";
+        input.select();
+      }
+    }catch(x){
+      err.textContent='This browser can\u2019t unlock the site \u2014 open it over https in a modern browser.';
     }
   });
 }
@@ -399,11 +481,11 @@ function buildForm(){
     return '<div class="setgrp"><div class="sh"><span class="sw" style="background:'+d.color+'"></span><span class="sn">'+d.label+'</span><span class="rt">'+rents+'</span></div>'+inputs+'</div>';
   }).join('');
   wrap.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',e=>{
-    state.names[e.target.dataset.set][+e.target.dataset.i]=e.target.value;render();
+    state.names[e.target.dataset.set][+e.target.dataset.i]=e.target.value;saveState();render();
   }));
 }
-document.getElementById('owner').addEventListener('input',e=>{state.owner=e.target.value;if(tab==='back')render();});
-document.getElementById('money').addEventListener('input',e=>{state.money=e.target.value;if(tab==='front')render();});
+document.getElementById('owner').addEventListener('input',e=>{state.owner=e.target.value;saveState();if(tab==='back')render();});
+document.getElementById('money').addEventListener('input',e=>{state.money=e.target.value;saveState();if(tab==='front')render();});
 
 /* ---------- preview ---------- */
 let tab='front';
@@ -419,8 +501,10 @@ function render(){clearTimeout(timer);timer=setTimeout(()=>{
 function sheets(cards){let out='';for(let i=0;i<cards.length;i+=9){out+='<div class="sheet">'+cards.slice(i,i+9).join('')+'</div>';}return out;}
 function printFronts(){document.getElementById('printArea').innerHTML=sheets(buildDeck(true));window.print();}
 function printBacks(){const n=buildDeck(true).length;const backs=[];for(let i=0;i<n;i++)backs.push(backCard());document.getElementById('printArea').innerHTML=sheets(backs);window.print();}
-function printBoxCutout(){window.open('box-cutout.html?print=1','_blank','noopener');}
 
+loadState();
+document.getElementById('owner').value=state.owner;
+document.getElementById('money').value=state.money;
 setupGate();buildForm();render();
 </script>
 </body>
